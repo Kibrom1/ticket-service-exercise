@@ -1,52 +1,118 @@
 package com.walmart.store.recruiting.ticket.domain;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 /**
- * This POJO contains the data relevant to a successful seat hold request, including the seat hold id which
- * may be used later to permanently reserve the seats.
+ * This POJO contains the data relevant to a successful seat hold request,
+ * including the seat hold id which may be used later to permanently reserve the
+ * seats.
  */
-public class SeatHold {
+public class SeatHold implements ISeatHold {
 
-    private String id;
-    private int numSeats;
+	private String id;
+	private int numSeats;
+	private String seatNumber;
+	// private SeatHold seatHold;
+	private Optional<LocalDateTime> heldOn;
+	private Optional<LocalDateTime> researvedOn;
+	private String researvationCode;
 
-    /**
-     * Constructor.
-     *
-     * @param id the unique hold identifier
-     * @param numSeats the number of seats that were held.
-     */
-    public SeatHold(String id, int numSeats) {
-        this.id = id;
-        this.numSeats = numSeats;
-    }
+	/*
+	 * constructor that have seats the held on date
+	 */
+	public SeatHold(String holdId, int numSeats) {
+		this.id = holdId;
+		this.numSeats = numSeats;
+		this.heldOn = Optional.of(LocalDateTime.now());
+	}
 
-    /**
-     * @return the seat hold (reservation) id
-     */
-    public String getId() {
-        return id;
-    }
+	/**
+	 * all setters and getters
+	 */
+	public int getNumSeats() {
+		return numSeats;
+	}
 
-    /**
-     * @return the number of seats that are being held
-     */
-    public int getNumSeats() {
-        return numSeats;
-    }
+	public String getId() {
+		return id;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public String getSeatNumber() {
+		return seatNumber;
+	}
 
-        SeatHold seatHold = (SeatHold) o;
+	public void setSeatNumber(String seatNumber) {
+		this.seatNumber = seatNumber;
+	}
 
-        return id.equals(seatHold.id);
-    }
+	public void setNumSeats(int numSeats) {
+		this.numSeats = numSeats;
+	}
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		SeatHold seatHold = (SeatHold) o;
+
+		return id.equals(seatHold.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public Optional<LocalDateTime> getHeldOn() {
+		return heldOn;
+	}
+
+	@Override
+	public Optional<LocalDateTime> getResearvedOn() {
+		return researvedOn;
+	}
+
+	@Override
+	public String getSeatHoldId() {
+		return id;
+	}
+
+	@Override
+	public void researve() {
+		this.researvedOn = Optional.of(LocalDateTime.now());
+		this.researvationCode = "" + this.researvedOn.get().getYear()
+				+ this.researvedOn.get().getMonth()
+				+ this.researvedOn.get().getDayOfMonth()
+				+ this.researvedOn.get().getHour()
+				+ this.researvedOn.get().getMinute()
+				+ this.researvedOn.get().getSecond();
+
+	}
+
+	@Override
+	public String getResearvationCode() {
+		// TODO Auto-generated method stub
+		return researvationCode;
+	}
+
+	@Override
+	public void setSeatHoldId(String id) {
+		// TODO Auto-generated method stub
+
+		this.id = id;
+	}
+
+	@Override
+	public void addSeats(List<ISeat> seats) {
+		// TODO Auto-generated method stub
+
+		seats.stream().forEach(s -> s.setSeatHold(this));
+	}
 
 }

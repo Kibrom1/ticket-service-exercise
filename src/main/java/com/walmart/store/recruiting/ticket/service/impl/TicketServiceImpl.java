@@ -1,66 +1,84 @@
 package com.walmart.store.recruiting.ticket.service.impl;
 
+import com.walmart.store.recruiting.ticket.domain.DataSource;
+import com.walmart.store.recruiting.ticket.domain.ISeat;
 import com.walmart.store.recruiting.ticket.domain.SeatHold;
 import com.walmart.store.recruiting.ticket.domain.Venue;
 import com.walmart.store.recruiting.ticket.service.TicketService;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A ticket service implementation.
  */
 public class TicketServiceImpl implements TicketService {
 
-    private int seatsAvailable;
-    private int seatsReserved;
-    private Map<String, SeatHold> seatHoldMap = new HashMap<>();
+	private int seatsAvailable;
+	private int seatsReserved;
+	private Map<String, SeatHold> seatHoldMap = new HashMap<>();
 
-    public TicketServiceImpl(Venue venue) {
-        seatsAvailable = venue.getMaxSeats();
-    }
+	public TicketServiceImpl(Venue venue) {
+		seatsAvailable = venue.getMaxSeats();
+	}
 
-    @Override
-    public int numSeatsAvailable() {
-        return seatsAvailable;
-    }
+	@Override
+	public int numSeatsAvailable(Optional<Integer> level) {
 
-    public int numSeatsReserved() {
-        return this.seatsReserved;
-    }
+		return (int) DataSource
+				.getInstance()
+				.getAllSeats()
+				.stream()
+				.filter(s -> (!level.isPresent() || s.getLevelId() == level
+						.get()) && s.isAvailable()).count();
+	}
 
-    @Override
-    public Optional<SeatHold> findAndHoldSeats(int numSeats) {
-        Optional<SeatHold> optionalSeatHold = Optional.empty();
+	public int numSeatsReserved() {
+		return this.seatsReserved;
+	}
 
-        if (seatsAvailable >= numSeats) {
-            String holdId = generateId();
-            SeatHold seatHold = new SeatHold(holdId, numSeats);
-            optionalSeatHold = Optional.of(seatHold);
-            seatHoldMap.put(holdId, seatHold);
-            seatsAvailable -= numSeats;
-        }
+	@Override
+	public Optional<String> reserveSeats(String seatHoldId) {
+		String optionalReservation;
 
-        return optionalSeatHold;
-    }
+		SeatHold seatHold = (SeatHold) DataSource.getInstance().getSeatHold(
+				seatHoldId);
+		seatHold.researve();
+		optionalReservation = seatHold.getResearvationCode();
 
-    @Override
-    public Optional<String> reserveSeats(String seatHoldId) {
-        Optional<String> optionalReservation = Optional.empty();;
-        SeatHold seatHold = seatHoldMap.get(seatHoldId);
-        if (seatHold != null) {
-            seatsReserved += seatHold.getNumSeats();
-            optionalReservation =  Optional.of(seatHold.getId());
-            seatHoldMap.remove(seatHoldId);
-        }
+		return optionalReservation;
+	}
 
-        return optionalReservation;
-    }
+	@Override
+	public SeatHold findAndHoldSeats(int numSeats, Optional<Integer> minLevel,
+			Optional<Integer> maxLevel) {
+		List<ISeat> seats = DataSource
+				.getInstance()
+				.getAllSeats()
+				.stream()
+				.filter(s -> s.isAvailable()
+						&& (!minLevel.isPresent() || s.getLevelId() >= minLevel
+								.get())
+						&& (!maxLevel.isPresent() || s.getLevelId() <= maxLevel
+								.get()))
+				.sorted(Comparator.comparing(s -> s.getLevelId()))
+				.limit(numSeats).collect(Collectors.toList());
 
-    private String generateId() {
-        return UUID.randomUUID().toString();
-    }
+		Optional<SeatHold> seatsHeld = Optional.empty();
+		SeatHold seatHold = new SeatHold("one", numSeats);
+		seatHold.addSeats(seats);
+		DataSource.getInstance().addSeatHold(seatHold);
+
+		return seatHold;
+	}
+
+	private String generateId() {
+		return UUID.randomUUID().toString();
+	}
 
 }

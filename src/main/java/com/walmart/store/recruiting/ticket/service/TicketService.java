@@ -35,7 +35,7 @@ public interface TicketService {
 	 * @return a reservation confirmation code, if the reservation has not
 	 *         expired.
 	 */
-	Optional<String> reserveSeats(String seatHoldId);
+	String reserveSeats(String seatHoldId);
 	
 
 }

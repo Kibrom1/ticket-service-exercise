@@ -43,7 +43,7 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public Optional<String> reserveSeats(String seatHoldId) {
+	public String reserveSeats(String seatHoldId) {
 		String optionalReservation;
 
 		SeatHold seatHold = (SeatHold) DataSource.getInstance().getSeatHold(
@@ -52,6 +52,7 @@ public class TicketServiceImpl implements TicketService {
 		optionalReservation = seatHold.getResearvationCode();
 
 		return optionalReservation;
+
 	}
 
 	@Override

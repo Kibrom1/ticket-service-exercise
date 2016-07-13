@@ -5,7 +5,6 @@ public interface IVenue {
 
 	String getLevelName();
 
-	//double getPrice();
 
 	int getRows();
 
@@ -15,7 +14,6 @@ public interface IVenue {
 
 	void setLevelName(String levelName);
 
-	//void setPrice(double price);
 
 
 }

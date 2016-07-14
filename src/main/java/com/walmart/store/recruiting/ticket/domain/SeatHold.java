@@ -9,7 +9,7 @@ import java.util.Optional;
  * including the seat hold id which may be used later to permanently reserve the
  * seats.
  */
-public class SeatHold implements ISeatHold {
+public class SeatHold {
 
 	private String id;
 	private int numSeats;
@@ -68,22 +68,21 @@ public class SeatHold implements ISeatHold {
 		return id.hashCode();
 	}
 
-	@Override
+
 	public Optional<LocalDateTime> getHeldOn() {
 		return heldOn;
 	}
 
-	@Override
+
 	public Optional<LocalDateTime> getResearvedOn() {
 		return researvedOn;
 	}
 
-	@Override
 	public String getSeatHoldId() {
 		return id;
 	}
 
-	@Override
+	
 	public void researve() {
 		this.researvedOn = Optional.of(LocalDateTime.now());
 		this.researvationCode = "" + this.researvedOn.get().getYear()
@@ -94,22 +93,20 @@ public class SeatHold implements ISeatHold {
 				+ this.researvedOn.get().getSecond();
 
 	}
-
-	@Override
+	
 	public String getResearvationCode() {
 		// TODO Auto-generated method stub
 		return researvationCode;
 	}
 
-	@Override
+	
 	public void setSeatHoldId(String id) {
 		// TODO Auto-generated method stub
 
 		this.id = id;
 	}
 
-	@Override
-	public void addSeats(List<ISeat> seats) {
+	public void addSeats(List<Seat> seats) {
 		// TODO Auto-generated method stub
 
 		seats.stream().forEach(s -> s.setSeatHold(this));

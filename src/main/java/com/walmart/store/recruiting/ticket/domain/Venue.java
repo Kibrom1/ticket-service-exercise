@@ -4,7 +4,7 @@ package com.walmart.store.recruiting.ticket.domain;
  * This class represents a venue where customers can buy tickets to see a show.
  * Our Venue seating is rectangular to simplify things.
  */
-public class Venue implements IVenue {
+public class Venue {
 
 	private final int id;
 	private final int rows;
@@ -61,32 +61,29 @@ public class Venue implements IVenue {
 		return id;
 	}
 
-	@Override
 	public int getLevelId() {
 		// TODO Auto-generated method stub
 		return levelId;
 	}
 
-	@Override
 	public String getLevelName() {
 		// TODO Auto-generated method stub
 		return levelName;
 	}
 
-	@Override
+	
 	public int getSeatsInRow() {
 		// TODO Auto-generated method stub
 		return seatsPerRow;
 	}
 
-	@Override
-	public void setLevelId(int levelId) {
+		public void setLevelId(int levelId) {
 		// TODO Auto-generated method stub
 
 		this.levelId = levelId;
 	}
 
-	@Override
+	
 	public void setLevelName(String levelName) {
 		// TODO Auto-generated method stub
 

@@ -1,7 +1,7 @@
 package com.walmart.store.recruiting.ticket.service.impl;
 
 import com.walmart.store.recruiting.ticket.domain.DataSource;
-import com.walmart.store.recruiting.ticket.domain.ISeat;
+import com.walmart.store.recruiting.ticket.domain.Seat;
 import com.walmart.store.recruiting.ticket.domain.SeatHold;
 import com.walmart.store.recruiting.ticket.domain.Venue;
 import com.walmart.store.recruiting.ticket.service.TicketService;
@@ -56,9 +56,9 @@ public class TicketServiceImpl implements TicketService {
 	}
 
 	@Override
-	public SeatHold findAndHoldSeats(int numSeats, Optional<Integer> minLevel,
-			Optional<Integer> maxLevel) {
-		List<ISeat> seats = DataSource
+	public synchronized SeatHold findAndHoldSeats(int numSeats,
+			Optional<Integer> minLevel, Optional<Integer> maxLevel) {
+		List<Seat> seats = DataSource
 				.getInstance()
 				.getAllSeats()
 				.stream()
@@ -70,8 +70,8 @@ public class TicketServiceImpl implements TicketService {
 				.sorted(Comparator.comparing(s -> s.getLevelId()))
 				.limit(numSeats).collect(Collectors.toList());
 
-		Optional<SeatHold> seatsHeld = Optional.empty();
-		SeatHold seatHold = new SeatHold("one", numSeats);
+		// Optional<SeatHold> seatsHeld = Optional.empty();
+		SeatHold seatHold = new SeatHold(generateId(), numSeats);
 		seatHold.addSeats(seats);
 		DataSource.getInstance().addSeatHold(seatHold);
 

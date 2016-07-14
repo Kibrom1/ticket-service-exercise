@@ -21,9 +21,9 @@ public class DataSource {
 		return instance;
 	}
 
-	private static List<IVenue> venues = new ArrayList<>();
-	private static List<ISeat> seats = new ArrayList<>();
-	private static List<ISeatHold> seatHolds = new ArrayList<>();
+	private static List<Venue> venues = new ArrayList<>();
+	private static List<Seat> seats = new ArrayList<>();
+	private static List<SeatHold> seatHolds = new ArrayList<>();
 
 	private static void initData() {
 		venues.add(new Venue(1, 40, 75, 75, "First"));
@@ -32,7 +32,7 @@ public class DataSource {
 		venues.add(new Venue(4, 40, 15, 100, "Fourth"));
 
 		int seatId = 1;
-		for (IVenue venue : venues) {
+		for (Venue venue : venues) {
 			int seatNumber = 1;
 			for (int i = 0; i < venue.getSeatsInRow() * venue.getRows(); i++) {
 				seats.add(new Seat("" + seatId++, venue.getLevelId(), venue
@@ -41,22 +41,22 @@ public class DataSource {
 		}
 	}
 
-	public List<ISeatHold> getAllSeatHolds() {
+	public List<SeatHold> getAllSeatHolds() {
 		return seatHolds;
 	}
 
-	public ISeatHold getSeatHold(String setHoldId) {
+	public SeatHold getSeatHold(String setHoldId) {
 		return seatHolds.stream()
 				.filter(sh -> sh.getSeatHoldId().equals(setHoldId)).findFirst()
 				.get();
 	}
 
 	
-	public List<ISeat> getAllSeats() {
+	public List<Seat> getAllSeats() {
 		return seats;
 	}
 
-	public void addSeatHold(ISeatHold seatHold) {
+	public void addSeatHold(SeatHold seatHold) {
 		Optional<String> maxId = seatHolds.stream()
 				.map(sh -> sh.getSeatHoldId())
 				.max(Comparator.comparing(shi -> shi));
